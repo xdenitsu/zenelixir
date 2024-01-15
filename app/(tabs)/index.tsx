@@ -1,13 +1,17 @@
-import { StyleSheet } from 'react-native';
+import { Button, Pressable, StyleSheet } from 'react-native';
 import { Text, View } from '../../components/Themed';
 import { Link } from "expo-router";
+import { useTheme } from '../../utils/context/ThemeContext';
 
-export default function TabOneScreen() {
+export default function HealthScreen() {
+  const {theme, toggleTheme} = useTheme()
+
   return (
-    <View style={styles.container}>
+    <View style={{...styles.container, backgroundColor: theme.colors.primary}}>
       <Text style={styles.title}>Health Screen</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <Link href="/modal"><Text>Click me</Text></Link>
+      <Pressable onPress={toggleTheme}><Text>Hey</Text></Pressable>
     </View>
   );
 }

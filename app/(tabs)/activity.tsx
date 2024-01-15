@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 import { Text, View } from '../../components/Themed';
 import { Link } from "expo-router";
 
-export default function TabOneScreen() {
+export default function ActivityScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Activity Screen</Text>

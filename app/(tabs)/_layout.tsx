@@ -1,108 +1,123 @@
-import TabBarIcon from "../../components/TabBarIcon";
+import Icon from "../../components/Icon";
 
 import { Link, Tabs } from "expo-router";
-import { useState } from "react";
-import { Platform, Pressable, useColorScheme } from "react-native";
-import Animated, {
-  useSharedValue,
-  withTiming,
-  useAnimatedStyle,
-  Easing,
-} from "react-native-reanimated";
+import { Platform, SafeAreaView } from "react-native";
 
 import { StyleSheet } from "react-native";
-import Colors from "../../constants/Colors";
-import { View } from "../../components/Themed";
+import { View, Text } from "../../components/Themed";
+import { useTheme } from "../../utils/context/ThemeContext";
+import { IconProps } from "../../types/components/Icon";
+import { TouchableRipple } from "react-native-paper";
+import * as Haptics from "expo-haptics";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
  */
 
 export default function TabLayout() {
-  const [circleRadius] = useState(0);
-  const colorScheme = useColorScheme();
+  const { theme } = useTheme();
 
   return (
     <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: "#A367B1",
-        tabBarStyle: styles.tabs,
-      }}
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color }) => {
+          let iconName: string;
+          let iconLibrary: IconProps["library"];
+
+          if (route.name === "index") {
+            iconName = "home";
+            iconLibrary = "FontAwesome";
+          } else if (route.name === "workout/index") {
+            iconName = "dumbbell";
+            iconLibrary = "MaterialCommunityIcons";
+          } else if (route.name === "activity") {
+            iconName = "stats-chart";
+            iconLibrary = "Ionicons";
+          } else if (route.name === "profile/index") {
+            iconName = "user";
+            iconLibrary = "FontAwesome";
+          } else {
+            iconName = "question";
+            iconLibrary = "AntDesign";
+          }
+
+          return <Icon library={iconLibrary} name={iconName} color={color} size={30}/>;
+        },
+        tabBarButton: (props) => {
+          return (
+            <TouchableRipple
+              background={{ radius: 50, borderless: true, color: "gray" }}
+              onLongPress={() =>
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+              }
+              centered={true}
+              rippleColor={"gray"}
+              {...props}
+            />
+          );
+        },
+        headerStyle: {
+          ...styles.header,
+          backgroundColor: theme.colors.background,
+        },
+        headerTitleStyle: { color: theme.colors.text },
+        tabBarStyle: {
+          ...styles.tabBar,
+          backgroundColor: theme.colors.background,
+        },
+        tabBarItemStyle: styles.tabItem,
+        tabBarInactiveTintColor: theme.colors.inactiveTint,
+        tabBarActiveTintColor: theme.colors.activeTint,
+      })}
     >
       <Tabs.Screen
         name="index"
         options={{
           headerShown: false,
-          title: "Health",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon library="FontAwesome5" name="heartbeat" color={color} />
-          ),
-          tabBarLabelStyle: styles.tab,
+          title: "Home",
         }}
       />
       <Tabs.Screen
-        name="workout"
+        name="workout/index"
         options={{
           title: "Workout",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon
-              library="MaterialCommunityIcons"
-              name="dumbbell"
-              color={color}
-            />
-          ),
-          tabBarLabelStyle: styles.tab,
-        }}
-      />
-      <Tabs.Screen
-        name="create"
-        options={{
-          title: "Create",
-          tabBarIcon: () => (
-            <View style={styles.button}>
-              <TabBarIcon
-                size={36}
-                library="AntDesign"
-                name="plus"
-                color="white"
-              />
-            </View>
-          ),
-          tabBarLabelStyle: styles.tab,
+          headerRight: () => (
+            <Link style={{padding: 10}} href="/modal" asChild>
+               <TouchableOpacity>
+               <Icon
+                    library="FontAwesome"
+                    name="edit"
+                    size={25}
+                    color={theme.colors.inactiveTint}
+                  />
+              </TouchableOpacity>
+            </Link>
+          )
         }}
       />
       <Tabs.Screen
         name="activity"
         options={{
           title: "Activity",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon library="Feather" name="activity" color={color} />
-          ),
-          tabBarLabelStyle: styles.tab,
         }}
       />
       <Tabs.Screen
-        name="profile/[slug]"
+        name="profile/index"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon library="FontAwesome" name="user" color={color} />
-          ),
-          tabBarLabelStyle: styles.tab,
-          // headerRight: () => (
-          //   <Link href="/modal" asChild>
-          //     <Pressable>
-          //       {({ pressed }) => (
-          //         <TabBarIcon
-          //           name="info-circle"
-          //           size={25}
-          //           color={Colors[colorScheme ?? 'light'].text}
-          //           style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-          //         />
-          //       )}
-          //     </Pressable>
-          //   </Link>
-          // ),
+          headerRight: () => (
+            <Link style={{paddingRight: 20}} href="/modal" asChild>
+               <TouchableOpacity>
+               <Icon
+                    library="FontAwesome"
+                    name="cog"
+                    size={25}
+                    color={theme.colors.inactiveTint}
+                  />
+              </TouchableOpacity>
+            </Link>
+          )
         }}
       />
     </Tabs>
@@ -110,19 +125,24 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  tabs: {
+  tabBar: {
     height: Platform.OS === "ios" ? 50 : 60,
+    borderTopWidth: 0,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
   },
-  tab: {
+  tabItem: {
+    paddingBottom: 5,
+  },
+  tabLabel: {
     marginBottom: 5,
   },
-  button: {
-    top: Platform.OS === "ios" ? -10 : -20,
-    height: Platform.OS === "ios" ? 50 : 60,
-    width: Platform.OS === "ios" ? 50 : 60,
-    borderRadius: Platform.OS === "ios" ? 25 : 30,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#A367B1",
-  },
+  header: {
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+  }
 });
