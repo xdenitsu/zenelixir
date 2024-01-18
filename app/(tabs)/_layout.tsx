@@ -7,7 +7,7 @@ import { StyleSheet } from "react-native";
 import { View, Text } from "../../components/Themed";
 import { useTheme } from "../../utils/context/ThemeContext";
 import { IconProps } from "../../types/components/Icon";
-import { TouchableRipple } from "react-native-paper";
+import { Appbar, TouchableRipple } from "react-native-paper";
 import * as Haptics from "expo-haptics";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -24,29 +24,35 @@ export default function TabLayout() {
         tabBarIcon: ({ color }) => {
           let iconName: string;
           let iconLibrary: IconProps["library"];
+          let tooltipTitle: string;
 
           if (route.name === "index") {
             iconName = "home";
             iconLibrary = "FontAwesome";
+            tooltipTitle = "Home";
           } else if (route.name === "workout/index") {
             iconName = "dumbbell";
             iconLibrary = "MaterialCommunityIcons";
+            tooltipTitle = "Workout";
           } else if (route.name === "activity") {
             iconName = "stats-chart";
             iconLibrary = "Ionicons";
+            tooltipTitle = "Activity";
           } else if (route.name === "profile/index") {
             iconName = "user";
             iconLibrary = "FontAwesome";
+            tooltipTitle = "Profile";
           } else {
             iconName = "question";
             iconLibrary = "AntDesign";
+            tooltipTitle = "Unknown";
           }
 
-          return <Icon library={iconLibrary} name={iconName} color={color} size={30}/>;
+          return <Icon library={iconLibrary} name={iconName} color={color} size={30}/>
         },
         tabBarButton: (props) => {
           return (
-            <TouchableRipple
+              <TouchableRipple
               background={{ radius: 50, borderless: true, color: "gray" }}
               onLongPress={() =>
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
@@ -54,9 +60,19 @@ export default function TabLayout() {
               centered={true}
               rippleColor={"gray"}
               {...props}
-            />
+              />
           );
         },
+        // header: () => {
+        //   return (
+        //   <Appbar.Header>
+        //     <Appbar.BackAction />
+        //     <Appbar.Content title="Workout" onPress={() => console.log("Test")}/>
+        //     <Appbar.Action icon="magnify" onPress={() => console.log("Test")}/>
+        //     <Appbar.Action icon="dots-vertical" onPress={() => console.log("Test")}/>
+        //   </Appbar.Header>
+        //   );
+        // },
         headerStyle: {
           ...styles.header,
           backgroundColor: theme.colors.background,
@@ -134,7 +150,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   tabItem: {
-    paddingBottom: 5,
+    borderColor: "red"
   },
   tabLabel: {
     marginBottom: 5,
