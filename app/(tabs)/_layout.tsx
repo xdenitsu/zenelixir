@@ -4,10 +4,9 @@ import { Link, Tabs } from "expo-router";
 import { Platform, SafeAreaView } from "react-native";
 
 import { StyleSheet } from "react-native";
-import { View, Text } from "../../components/Themed";
 import { useTheme } from "../../utils/context/ThemeContext";
 import { IconProps } from "../../types/components/Icon";
-import { Appbar, TouchableRipple } from "react-native-paper";
+import { TouchableRipple } from "react-native-paper";
 import * as Haptics from "expo-haptics";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -53,7 +52,7 @@ export default function TabLayout() {
         tabBarButton: (props) => {
           return (
               <TouchableRipple
-              background={{ radius: 50, borderless: true, color: "gray" }}
+              background={{ radius: 60, borderless: true, color: "gray" }}
               onLongPress={() =>
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
               }
@@ -77,13 +76,14 @@ export default function TabLayout() {
           ...styles.header,
           backgroundColor: theme.colors.background,
         },
-        headerTitleStyle: { color: theme.colors.text },
+        headerTitleStyle: { color: theme.colors.tint },
+        headerShadowVisible: false,
         tabBarStyle: {
           ...styles.tabBar,
-          backgroundColor: theme.colors.background,
+          backgroundColor: theme.colors.primary,
         },
         tabBarItemStyle: styles.tabItem,
-        tabBarInactiveTintColor: theme.colors.inactiveTint,
+        tabBarInactiveTintColor: theme.colors.tint,
         tabBarActiveTintColor: theme.colors.activeTint,
       })}
     >
@@ -105,7 +105,7 @@ export default function TabLayout() {
                     library="FontAwesome"
                     name="edit"
                     size={25}
-                    color={theme.colors.inactiveTint}
+                    color={theme.colors.tint}
                   />
               </TouchableOpacity>
             </Link>
@@ -129,7 +129,7 @@ export default function TabLayout() {
                     library="FontAwesome"
                     name="cog"
                     size={25}
-                    color={theme.colors.inactiveTint}
+                    color={theme.colors.tint}
                   />
               </TouchableOpacity>
             </Link>
